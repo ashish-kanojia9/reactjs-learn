@@ -1,6 +1,9 @@
-import React from 'react'
+import React from 'react';
 import './App.css';
 import { useState } from 'react';
+import TDForm from './components/TDForm';
+import TDList from './components/TDList';
+
 const App = () => {
   const[todo, setTodo] = useState("");
   const[todos, setTodos] = useState([]);
@@ -11,15 +14,11 @@ const App = () => {
 
     if(editId){
       const editTD=todos.find((i)=>i.id === editId);
-      const updatedTD = todos.map((t)=>
-      t.id===editTD.id? 
-      (t={id:t.id,todo}):
-      {id:t.id,todo:t.todo}
-      );
+      const updatedTD = todos.map((t) => t.id===editTD.id ? (t={id:t.id,todo}): {id:t.id,todo:t.todo});
       setTodos(updatedTD);
-      setEditId(0)
-      setTodo("")
-      return
+      setEditId(0);
+      setTodo("");
+      return;
     }
     if(todo!==""){
       setTodos([{id: `${todo}-${Date.now()}`,todo }, ...todos]);
@@ -28,37 +27,30 @@ const App = () => {
   };
 
   const handleDelete=(id)=>{
-    const delTD = todos.filter((de)=>de.id !== id)
-    setTodos([...delTD])
-    setEditId(id)
+    const delTD = todos.filter((de)=>de.id !== id);
+    setTodos([...delTD]);
+    // setEditId(id)
   }
 
   const handleEdit=(id)=>{
-    const editTD=todos.find((e)=>e.id===id)
-    setTodo(editTD.todo)
+    const editTD=todos.find((e)=>e.id===id);
+    setTodo(editTD.todo);
+    setEditId(id);
   }
   return (
     <div className="App">
       <div className="container">
         <h1>ToDo List</h1>
-        <form className="todoform" onSubmit={handleSubmit}>
-          <input type = 'text'value={todo} onChange={(e) => setTodo(e.target.value)}/>
-          <button type="submit">{editId? "Edit" : "GO"}</button>
-        </form>
+        <TDForm handleSubmit={handleSubmit}
+        todo={todo}
+        editId={editId}
+        setTodo={setTodo}/>
+    
 
-        <ul className="allTD">
-          {
-            todos.map((t) => (
-            <li className="singleTD">
-              <span className="tdTx" key={t.id}>
-                {t.todo}
-              </span>
-              <button onClick={()=>handleEdit(t.id)}>Edit</button>
-              <button onClick={()=>handleDelete(t.id)}>Delete</button>
-            </li>
-            ))
-          }
-        </ul>
+        <TDList
+        todos={todos}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}/>
       </div>      
     </div>
   );
